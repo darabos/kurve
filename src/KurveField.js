@@ -57,7 +57,8 @@ Kurve.Field = {
     },
     
     initContext: function() {
-        this.ctx = this.canvas.getContext('2d');
+        this.app = new PIXI.Application({width: this.canvas.width, height: this.canvas.height});
+        this.app.renderer = new PIXI.autoDetectRenderer(this.canvas.width * window.devicePixelRatio, this.canvas.height * window.devicePixelRatio, {view: this.canvas});
     },
     
     initField: function() {
@@ -70,7 +71,7 @@ Kurve.Field = {
     },
 
     drawField: function() {
-        this.ctx.beginPath();
+        /*this.ctx.beginPath();
 
         this.ctx.strokeStyle = Kurve.Theming.getThemedValue('field', 'borderColor');
         this.ctx.lineWidth   = 3;
@@ -79,13 +80,22 @@ Kurve.Field = {
         this.ctx.rect(0, 0, this.width, this.height);
       
         this.ctx.stroke();
-        
+        */
         this.drawnPixels = [];
     },
 
     drawLine: function(fromPointX, fromPointY, toPointX, toPointY, color) {
         if ( color === undefined ) color = Kurve.Theming.getThemedValue('field', 'defaultColor');
 
+        var line = new PIXI.Graphics();
+
+        line.lineStyle(this.defaultLineWidth, 0x66CCF, 1);
+        line.moveTo(fromPointX, fromPointY);
+        line.lineTo(toPointX, toPointY);
+
+        this.app.stage.addChild(line);
+
+/*
         this.ctx.beginPath();
 
         this.ctx.strokeStyle = color;
@@ -94,7 +104,7 @@ Kurve.Field = {
         this.ctx.moveTo(fromPointX, fromPointY);
         this.ctx.lineTo(toPointX, toPointY);
 
-        this.ctx.stroke();
+        this.ctx.stroke();*/
 
         this.addLineToDrawnPixel(fromPointX, fromPointY, toPointX, toPointY, color);
     },
@@ -102,10 +112,17 @@ Kurve.Field = {
     drawUntrackedPoint: function(pointX, pointY, color) {
         if ( color === undefined ) color = Kurve.Theming.getThemedValue('field', 'defaultColor');
 
+        var circle = new PIXI.Graphics();
+        circle.beginFill(0x66CCF);
+        circle.drawCircle(pointX, pointY, 2);
+        circle.endFill();
+        this.app.stage.addChild(circle);
+
+        /*
         this.ctx.beginPath();
         this.ctx.fillStyle = color;
         this.ctx.arc(pointX, pointY, 2, 0, 2 * Math.PI, false);
-        this.ctx.fill();
+        this.ctx.fill();*/
     },
 
     drawPoint: function(pointX, pointY, color) {
